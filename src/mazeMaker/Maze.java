@@ -1,5 +1,6 @@
 package mazeMaker;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
@@ -9,15 +10,22 @@ public class Maze
 	public int ySize = 0;
 	public int totalDimensions = 0;
 	
-	Random randomGenerator = new Random();
+	Random randomGenerator = new Random(System.currentTimeMillis());
 	
 	public Cell[][] cellData;
 	
 	public Stack<Cell> cellStack = new Stack<Cell>();
 	
+	// used for prim's algorithm
+	public ArrayList<Cell> primsWallList = new ArrayList<Cell>();
+	
 	Cell tempCell; // Temporary variable used for maze generation
 	
-	public Maze(int xSize, int ySize) 
+	// METHODS
+	// RBT = 0 (default)
+	// Prim = 1
+	// Kruskal = 2
+	public Maze(int xSize, int ySize, int method) 
 	{
 		cellData = new Cell[xSize][ySize];
 		this.xSize = xSize;
@@ -50,7 +58,11 @@ public class Maze
 		}
 		
 		initBoundries();
-		generateMaze();
+		
+		if (method == 0) 
+		{
+			generateMazeRBT();
+		}
 	}
 	
 	private void initBoundries() 
@@ -66,13 +78,13 @@ public class Maze
         } 
 	}
 	
-	private void generateMaze(int x, int y) 
+	private void generateMazeRBT(int x, int y) 
 	{
 		// Set current cell as visited
 		cellData[x][y].hasBeenVisited = true;
 		
 		// While there are unvisited neighbors
-		while (!cellData[x][y+1].hasBeenVisited || !cellData[x+1][y].hasBeenVisited || !cellData[x][y-1].hasBeenVisited || !cellData[x-1][y].hasBeenVisited) 
+		while (!cellData[x + 1][y].hasBeenVisited || !cellData[x - 1][y].hasBeenVisited || !cellData[x][y + 1].hasBeenVisited || !cellData[x][y - 1].hasBeenVisited) 
 		{
 			// Select a random neighbor
 			while (true) 
@@ -83,7 +95,7 @@ public class Maze
                 	cellStack.push(cellData[x][y]);
                     cellData[x][y].hasNorthWall = false;
                     cellData[x][y+1].hasSouthWall = false;
-                    generateMaze(x, y + 1);
+                    generateMazeRBT(x, y + 1);
                     break;
                 }
                 else if (r == 1 && !cellData[x+1][y].hasBeenVisited) 
@@ -91,7 +103,7 @@ public class Maze
                 	cellStack.push(cellData[x][y]);
                     cellData[x][y].hasEastWall = false;
                     cellData[x+1][y].hasWestWall = false;
-                    generateMaze(x+1, y);
+                    generateMazeRBT(x+1, y);
                     break;
                 }
                 else if (r == 2 && !cellData[x][y-1].hasBeenVisited) 
@@ -99,7 +111,7 @@ public class Maze
                 	cellStack.push(cellData[x][y]);
                     cellData[x][y].hasSouthWall = false;
                     cellData[x][y-1].hasNorthWall = false;
-                    generateMaze(x, y-1);
+                    generateMazeRBT(x, y-1);
                     break;
                 }
                 else if (r == 3 && !cellData[x-1][y].hasBeenVisited) 
@@ -107,7 +119,7 @@ public class Maze
                 	cellStack.push(cellData[x][y]);
                     cellData[x][y].hasWestWall = false;
                     cellData[x-1][y].hasEastWall = false;
-                    generateMaze(x-1, y);
+                    generateMazeRBT(x-1, y);
                     break;
                 }
 			}
@@ -117,14 +129,40 @@ public class Maze
 		if (!cellStack.isEmpty()) 
 		{
 			tempCell = cellStack.pop();
-			generateMaze(tempCell.xPos, tempCell.yPos);
+			generateMazeRBT(tempCell.xPos, tempCell.yPos);
 		}
 	}
 	
 	// Begin generating maze at top left corner
-	private void generateMaze() 
+	private void generateMazeRBT() 
 	{
-		generateMaze(1,1);
+		generateMazeRBT(15,22);
+	}
+	
+	// Prim's algorithm for mazes
+	//    Start with a grid full of walls.
+	//    Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list.
+	//    While there are walls in the list:
+	//        Pick a random wall from the list. If only one of the two cells that the wall divides is visited, then:
+	//            Make the wall a passage and mark the unvisited cell as part of the maze.
+	//            Add the neighboring walls of the cell to the wall list.
+	//        Remove the wall from the list.
+	private void generateMazePrim() 
+	{
+		// Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list.
+		primsWallList.add(cellData[randomGenerator.nextInt(xSize)][randomGenerator.nextInt(ySize)]);
+		
+		// While there are walls in the list:
+		while (!(primsWallList.isEmpty())) 
+		{
+			
+		}
+	}
+	
+	// Kruskal's algorithm for mazes
+	private void generateMazeKruskal() 
+	{
+		
 	}
 	
 }

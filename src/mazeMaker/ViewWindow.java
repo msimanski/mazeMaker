@@ -15,7 +15,9 @@ public class ViewWindow extends Frame
 		
 		mainMaze = maze;
 		
-		setSize(400,400);
+		setSize(800,800);
+		
+		setUndecorated(true);
 		
 		setVisible(true);
 		
@@ -37,32 +39,46 @@ public class ViewWindow extends Frame
 		{
 			for(int j = 0; j < mainMaze.ySize; j++) 
 			{
+				// print out coordinate markers, just for the top and left wall
+				g.setFont(new Font("TimesRoman", Font.PLAIN, 12));
+				if((i == 0) || (j == 1)) 
+				{
+					g.drawString(Integer.toString(i) + "," + Integer.toString(j), i * 20, j * 20);
+				}
+				
+				// if this is one with all walls, make it a solid square
 				if(mainMaze.cellData[i][j].hasWestWall == true 
 						&& mainMaze.cellData[i][j].hasEastWall == true 
 						&& mainMaze.cellData[i][j].hasNorthWall == true 
 						&& mainMaze.cellData[i][j].hasSouthWall == true) 
 				{
-					g.fillRect(i * 10, j * 10, 10, 10);
+					//g.setColor(Color.white);
+					g.drawRect(i * 20, j * 20, 20, 20);
+					//g.setColor(Color.black);
 				}
 				
-				if(mainMaze.cellData[i][j].hasWestWall == true) 
+				// otherwise handle each individual wall
+				else 
 				{
-					g.drawLine((i * 10), (j * 10), (i * 10), (j * 10) + 10);
-				}
-				
-				if(mainMaze.cellData[i][j].hasEastWall == true) 
-				{
-					g.drawLine((i * 10) + 10, (j * 10), (i * 10), (j * 10));
-				}
-				
-				if(mainMaze.cellData[i][j].hasNorthWall == true) 
-				{
-					g.drawLine((i * 10), (j * 10), (i * 10) + 10, (j * 10));
-				}
-				
-				if(mainMaze.cellData[i][j].hasSouthWall == true) 
-				{
-					g.drawLine((i * 10), (j * 10) + 10, (i * 10), (j * 10) + 10);
+					if(mainMaze.cellData[i][j].hasWestWall == true) 
+					{
+						g.drawLine((i * 20), (j * 20), (i * 20), (j * 20) + 20);
+					}
+					
+					if(mainMaze.cellData[i][j].hasEastWall == true) 
+					{
+						g.drawLine((i * 20) + 20, (j * 20), (i * 20), (j * 20));
+					}
+					
+					if(mainMaze.cellData[i][j].hasNorthWall == true) 
+					{
+						g.drawLine((i * 20), (j * 20), (i * 20) + 20, (j * 20));
+					}
+					
+					if(mainMaze.cellData[i][j].hasSouthWall == true) 
+					{
+						g.drawLine((i * 20), (j * 20) + 20, (i * 20), (j * 20) + 20);
+					}
 				}
 			}
 		}

@@ -2,7 +2,7 @@ package mazeMaker;
 
 public class Main 
 {
-	public static Maze mainMaze = new Maze(40, 40);
+	public static Maze mainMaze = new Maze(40, 40, 0);
 	
 	public static void main(String[] args) 
 	{
